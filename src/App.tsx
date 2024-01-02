@@ -1,48 +1,48 @@
-import { useEffect, useState } from "react"
-import reactLogo from "./assets/rune.svg"
-import viteLogo from "/vite.svg"
-import "./App.css"
-import { GameState } from "./logic.ts"
+import { useEffect, useState } from "react";
+import { Canvas } from "@react-three/fiber";
+import reactLogo from "./assets/rune.svg";
+import viteLogo from "/vite.svg";
+import "./App.css";
+import { GameState } from "./logic.ts";
+import { Color, FogExp2 } from "three";
+import { SceneContents } from "./components/Scene.tsx";
+import { Players } from "rune-games-sdk";
+import { Hud } from "./components/Hud.tsx";
 
 function App() {
-  const [game, setGame] = useState<GameState>()
+  const [game, setGame] = useState<GameState>();
+  const [yourPlayerId, setYourPlayerId] = useState<string>();
+  const [players, setPlayers] = useState<Players>();
   useEffect(() => {
     Rune.initClient({
-      onChange: ({ game }) => {
-        setGame(game)
+      onChange: ({ game, players, yourPlayerId }) => {
+        setGame(game);
+        setYourPlayerId(yourPlayerId);
+        setPlayers(players);
       },
-    })
-  }, [])
+    });
+  }, []);
 
-  if (!game) {
-    return <div>Loading...</div>
+  if (!game || !players) {
+    return <div>Loading...</div>;
   }
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://developers.rune.ai" target="_blank">
-          <img src={reactLogo} className="logo rune" alt="Rune logo" />
-        </a>
-      </div>
-      <h1>Vite + Rune</h1>
-      <div className="card">
-        <button onClick={() => Rune.actions.increment({ amount: 1 })}>
-          count is {game.count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> or <code>src/logic.ts</code> and save to
-          test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and Rune logos to learn more
-      </p>
-    </>
-  )
+    <div className="container">
+      <Canvas
+        scene={{
+          background: new Color("hsl(260, 40%, 10%)"),
+          fog: new FogExp2(new Color("hsl(260, 40%, 10%)"), 0.05),
+        }}
+      >
+        <SceneContents game={game} yourPlayerId={yourPlayerId} />
+      </Canvas>
+
+      {yourPlayerId && (
+        <Hud game={game} yourPlayerId={yourPlayerId} players={players} />
+      )}
+    </div>
+  );
 }
 
-export default App
+export default App;
