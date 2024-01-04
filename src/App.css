@@ -14,27 +14,30 @@
 }
 
 .ui {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  display: grid;
+  grid-template:
+    "health health health" auto
+    "info info info" auto
+    "callouts-left center callouts-right" 1fr
+    "buttons buttons buttons" auto / 1fr 3fr 1fr;
+  place-items: stretch;
   z-index: 1;
   pointer-events: none;
   overflow: hidden;
 }
 
-.ui > * {
-  pointer-events: auto;
-}
-
 .buttons {
+  grid-area: buttons;
   margin-top: auto;
   align-self: stretch;
   display: flex;
   background: #444;
   gap: 1px;
+  height: 6em;
+  pointer-events: auto;
 }
 
-.buttons > * {
+.buttons > button {
   flex: 1;
   padding: 0.5em;
   display: flex;
@@ -43,17 +46,83 @@
   background: #333;
   border: none;
   border-radius: 0;
-  height: 3em;
+}
+
+.buttons svg {
+  width: 4em;
+  height: 4em;
+}
+
+.buttons svg path {
+  fill: var(--player-color);
 }
 
 .health-bar {
+  grid-area: health;
   width: 100%;
-  height: 1em;
+  height: 10px;
   background: #333;
   margin-bottom: 1em;
 }
 
 .health-bar-fill {
   height: 100%;
-  background: skyblue;
+  background: limegreen;
+}
+
+.callouts {
+  position: relative;
+}
+
+.callouts.own {
+  grid-area: callouts-right;
+}
+
+.callouts.others {
+  grid-area: callouts-left;
+}
+
+.callouts > .callout {
+  position: absolute;
+  width: 3em;
+  height: 3em;
+  animation: callout 1s ease-in-out;
+  animation-fill-mode: forwards;
+}
+
+.callout svg path {
+  fill: var(--player-color);
+}
+
+.info {
+  grid-area: info;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.info > h1 {
+  margin: 0;
+  font-size: 5em;
+}
+
+.debug {
+  grid-area: center;
+  display: flex;
+  flex-direction: column;
+}
+
+@keyframes callout {
+  0% {
+    opacity: 0;
+    transform: translateY(0);
+  }
+  20% {
+    opacity: 1;
+    transform: translateY(20%);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-100%);
+  }
 }

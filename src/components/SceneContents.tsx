@@ -1,7 +1,7 @@
-import { useFrame } from "@react-three/fiber";
+import { useFrame, useThree } from "@react-three/fiber";
 import { EffectComposer, Bloom } from "@react-three/postprocessing";
 import { useMemo, Suspense, useRef } from "react";
-import { CubicBezierCurve3, Vector3 } from "three";
+import { Color, CubicBezierCurve3, Vector3 } from "three";
 import { Action } from "./Action";
 import { Lights } from "./Lights";
 import { Camera } from "./Camera";
@@ -16,20 +16,30 @@ export const SceneContents = ({
 }) => {
   const playerPosition = useRef(new Vector3());
 
-  const reconstructedSegments = useMemo(
+  const curve = useMemo(
     () =>
-      game.segments.map(({ curve, owner }) => ({
-        curve: new CubicBezierCurve3(curve.v0, curve.v1, curve.v2, curve.v3),
-        owner,
-      })),
-    [game.segments]
+      new CubicBezierCurve3(
+        ...game.currentSegment?.curveParameters.map((x) => new Vector3(...x))
+      ),
+    [game.currentSegment]
+  );
+
+  const { scene } = useThree();
+  const color = useMemo(
+    () => new Color(game.currentLevelBackground),
+    [game.currentLevelBackground]
   );
 
   useFrame(() => {
-    reconstructedSegments[game.currentSegment].curve.getPointAt(
-      game.currentSegmentPosition,
+    curve.getPointAt(
+      game.currentSegmentDistance / game.currentSegment.length,
       playerPosition.current
     );
+
+    if (scene.background instanceof Color) {
+      scene.background.lerp(color, 0.05);
+      scene.fog?.color.set(scene.background);
+    }
   });
 
   return (
@@ -40,7 +50,6 @@ export const SceneContents = ({
         game={game}
         yourPlayerId={yourPlayerId}
         playerPosition={playerPosition}
-        reconstructedSegments={reconstructedSegments}
       />
       <Suspense fallback={null}>
         <EffectComposer>

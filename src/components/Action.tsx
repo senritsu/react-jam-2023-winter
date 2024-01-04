@@ -1,8 +1,7 @@
-import { Sphere, Tube } from "@react-three/drei";
+import { Sphere } from "@react-three/drei";
 import { GameState } from "../logic";
 import {
   BufferGeometry,
-  CubicBezierCurve3,
   Material,
   Mesh,
   NormalBufferAttributes,
@@ -11,17 +10,16 @@ import {
 } from "three";
 import { useFrame } from "@react-three/fiber";
 import { MutableRefObject, useRef } from "react";
+import { LevelSegment } from "./LevelSegment";
 
 export const Action = ({
   game,
   yourPlayerId,
   playerPosition,
-  reconstructedSegments,
 }: {
   game: GameState;
   yourPlayerId?: string;
   playerPosition: MutableRefObject<Vector3>;
-  reconstructedSegments: { curve: CubicBezierCurve3; owner: string }[];
 }) => {
   const sphereRef =
     useRef<
@@ -38,24 +36,31 @@ export const Action = ({
     sphereRef.current.position.copy(playerPosition.current);
   });
 
+  const orbColor = game.playerColors[game.activePlayerId];
+
   return (
     <>
       {/* <Tube args={[curve, game.path.length * 10, 0.1, 8, false]} /> */}
-      {reconstructedSegments.map(({ curve, owner }, index) => (
-        <Tube key={index} args={[curve, 10, 0.1, 8, false]}>
-          <meshStandardMaterial
-            color={yourPlayerId === owner ? "skyblue" : "hsl(260, 40%, 20%)"}
-            emissive={yourPlayerId === owner ? "skyblue" : "hsl(260, 40%, 20%)"}
-            emissiveIntensity={yourPlayerId === owner ? 3 : 0.5}
-            toneMapped={false}
+      {game.segments.map((segment) => {
+        const isCorrect = segment.owner === game.activePlayerId;
+        const isCurrent = segment.id === game.currentSegment.id;
+
+        return (
+          <LevelSegment
+            key={segment.id}
+            segment={segment}
+            isCorrect={isCorrect}
+            isCurrent={isCurrent}
+            playerColors={game.playerColors}
+            yourPlayerId={yourPlayerId}
           />
-        </Tube>
-      ))}
+        );
+      })}
       <Sphere ref={sphereRef} args={[0.2]}>
         <meshStandardMaterial
-          color={game.correctController ? "skyblue" : "red"}
-          emissive={game.correctController ? "skyblue" : "red"}
-          emissiveIntensity={game.correctController ? 5 : 0.5}
+          color={orbColor}
+          emissive={orbColor}
+          emissiveIntensity={game.correctPlayerIsInControl ? 15 : 0.5}
           toneMapped={false}
         />
       </Sphere>

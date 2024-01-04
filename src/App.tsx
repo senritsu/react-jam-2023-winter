@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
-import { Canvas } from "@react-three/fiber";
+import { Canvas, useFrame } from "@react-three/fiber";
 import reactLogo from "./assets/rune.svg";
 import viteLogo from "/vite.svg";
 import "./App.css";
 import { GameState } from "./logic.ts";
 import { Color, FogExp2 } from "three";
-import { SceneContents } from "./components/Scene.tsx";
+import { SceneContents } from "./components/SceneContents.tsx";
 import { Players } from "rune-games-sdk";
-import { Hud } from "./components/Hud.tsx";
+import { Hud } from "./components/hud/Hud.tsx";
 
 function App() {
   const [game, setGame] = useState<GameState>();
