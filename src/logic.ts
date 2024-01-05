@@ -3,6 +3,7 @@ import {
   Point,
   Vector3,
   add,
+  estimateCurveLength,
   getLength,
   multiplyScalar,
   normalize,
@@ -77,9 +78,7 @@ const addSegment = (previousSegment: Segment, owner: string): Segment => {
   const rescaledTangent = multiplyScalar(normalize(tangentDirection), 3);
   const v2 = add(rescaledTangent, v3);
 
-  // const curve = new CubicBezierCurve3(v0, v1, v2, v3);
-  // const length = curve.getLength();
-  const length = getLength(sub(v3, v0)) * 1.25; // rough estimate, don't want to reimplement bezier curves right now
+  const length = estimateCurveLength([v0, v1, v2, v3], 10);
 
   return {
     id: previousSegment.id + 1,
