@@ -3,6 +3,7 @@ import {
   Point,
   Vector3,
   add,
+  copy,
   estimateCurveLength,
   getLength,
   multiplyScalar,
@@ -61,14 +62,14 @@ const randomNextPathVector = (start: Vector3): Vector3 => [
 
 const addSegment = (previousSegment: Segment, owner: string): Segment => {
   // start new segment at previous end point
-  const v0 = previousSegment.curveParameters[3];
+  const v0 = copy(previousSegment.curveParameters[3]);
   // calculate a mirrored control point to get a smooth transition
 
   const previousC1Local = sub(previousSegment.curveParameters[2], v0); // calculate direction vector from v0 to v1
   const c1Local = multiplyScalar(previousC1Local, -1);
   const v1 = add(c1Local, v0); // back to world space
 
-  const v3 = previousSegment.nextSegmentEnd;
+  const v3 = copy(previousSegment.nextSegmentEnd);
 
   const nextSegmentEnd = randomNextPathVector(v3);
 
