@@ -1,7 +1,5 @@
 import { useEffect, useState } from "react";
 import { Canvas } from "@react-three/fiber";
-import reactLogo from "./assets/rune.svg";
-import viteLogo from "/vite.svg";
 import "./App.css";
 import { GameState } from "./logic.ts";
 import { Color, FogExp2 } from "three";

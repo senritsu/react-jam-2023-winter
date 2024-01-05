@@ -1,7 +1,15 @@
 import type { RuneClient } from "rune-games-sdk/multiplayer";
-import { CubicBezierCurve3, Vector3 } from "three";
+import {
+  Point,
+  Vector3,
+  add,
+  getLength,
+  multiplyScalar,
+  normalize,
+  sub,
+} from "./logic.math";
+// import { CubicBezierCurve3, Vector3 } from "three";
 
-export type Point = [number, number, number];
 export type Segment = {
   id: number;
   owner: string;
@@ -44,56 +52,46 @@ const randomBetween = (a: number, b: number) => a + Math.random() * (b - a);
 const MIN_SEGMENT_LENGTH = 6;
 const MAX_SEGMENT_LENGTH = 20;
 
-const randomNextPathVector = (start: Vector3) =>
-  new Vector3(
-    (2 * Math.random() - 1) * 2,
-    (2 * Math.random() - 1) * 0.5,
-    start.z + randomBetween(MIN_SEGMENT_LENGTH, MAX_SEGMENT_LENGTH)
-  );
+const randomNextPathVector = (start: Vector3): Vector3 => [
+  (2 * Math.random() - 1) * 2,
+  (2 * Math.random() - 1) * 0.5,
+  start[2] + randomBetween(MIN_SEGMENT_LENGTH, MAX_SEGMENT_LENGTH),
+];
 
 const addSegment = (previousSegment: Segment, owner: string): Segment => {
   // start new segment at previous end point
-  const v0 = new Vector3(...previousSegment.curveParameters[3]);
+  const v0 = previousSegment.curveParameters[3];
   // calculate a mirrored control point to get a smooth transition
-  const v1 = new Vector3(...previousSegment.curveParameters[2]) // start at previous second control point
-    .sub(v0) // calculate direction vector from v0 to v1
-    .multiplyScalar(-1) // invert
-    .add(v0); // back to world space
 
-  const v3 = new Vector3(...previousSegment.nextSegmentEnd);
+  const previousC1Local = sub(previousSegment.curveParameters[2], v0); // calculate direction vector from v0 to v1
+  const c1Local = multiplyScalar(previousC1Local, -1);
+  const v1 = add(c1Local, v0); // back to world space
+
+  const v3 = previousSegment.nextSegmentEnd;
 
   const nextSegmentEnd = randomNextPathVector(v3);
 
   // calculate the control point leading smoothly to the next segment
-  const v2 = new Vector3()
-    .subVectors(v3, nextSegmentEnd) // get direction vector from end point of next segment to start point of this segment, to get a tangent parallel to it
-    .normalize()
-    .multiplyScalar(3)
-    .add(v3);
 
-  const curve = new CubicBezierCurve3(v0, v1, v2, v3);
-  const length = curve.getLength();
+  const tangentDirection = sub(v3, nextSegmentEnd);
+  const rescaledTangent = multiplyScalar(normalize(tangentDirection), 3);
+  const v2 = add(rescaledTangent, v3);
+
+  // const curve = new CubicBezierCurve3(v0, v1, v2, v3);
+  // const length = curve.getLength();
+  const length = getLength(sub(v3, v0)) * 1.25; // rough estimate, don't want to reimplement bezier curves right now
 
   return {
     id: previousSegment.id + 1,
     owner,
-    curveParameters: [v0, v1, v2, v3].map((v) => [v.x, v.y, v.z]) as [
-      Point,
-      Point,
-      Point,
-      Point
-    ],
-    nextSegmentEnd: [
-      nextSegmentEnd.x,
-      nextSegmentEnd.y,
-      nextSegmentEnd.z,
-    ] as Point,
+    curveParameters: [v0, v1, v2, v3],
+    nextSegmentEnd,
     length,
   };
 };
 
 const getInitializerSegment = (): Segment => {
-  const v = randomNextPathVector(new Vector3(0, 0, 0));
+  const nextSegmentEnd = randomNextPathVector([0, 0, 0]);
 
   return {
     id: -1,
@@ -104,7 +102,7 @@ const getInitializerSegment = (): Segment => {
       [0, 0, -3],
       [0, 0, 0],
     ],
-    nextSegmentEnd: [v.x, v.y, v.z],
+    nextSegmentEnd,
     length: 10,
   };
 };

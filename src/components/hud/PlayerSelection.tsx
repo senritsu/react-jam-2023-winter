@@ -2,7 +2,6 @@ import { Players } from "rune-games-sdk";
 
 import { playerIconLookup } from "./icons/player-icons";
 import { GameState } from "../../logic";
-import { FC } from "react";
 import { playSoundEffect } from "sounds-some-sounds";
 
 export const PlayerSelection = ({
