@@ -1,0 +1,104 @@
+.layout {
+  display: grid;
+  grid-template:
+    ". . ." 1fr
+    "title title title " auto
+    "tutorial tutorial tutorial" auto
+    ". ready-status ." auto
+    ". ready-button ." auto
+    ". . ." 1fr / 1fr auto 1fr;
+  gap: 1em;
+}
+
+.title {
+  grid-area: title;
+  display: flex;
+  justify-content: center;
+}
+
+.title h1 {
+  margin: 0;
+}
+
+.tutorial {
+  grid-area: tutorial;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.tutorial.li {
+  color: var(--player-color);
+}
+
+.countdown {
+  grid-area: 1 / 1 / -1 / -1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 10em;
+  font-weight: bold;
+  pointer-events: none;
+}
+
+.countdown > * {
+  animation: countdown 0.5s ease-in;
+  animation-fill-mode: forwards;
+}
+
+@keyframes countdown {
+  0% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.75);
+  }
+}
+
+.status {
+  grid-area: ready-status;
+  display: flex;
+  justify-content: center;
+  gap: 0.25em;
+}
+
+.status svg {
+  width: 2em;
+  height: 2em;
+}
+
+.status svg path {
+  fill: var(--color-ui);
+}
+
+.status .ready svg path {
+  fill: var(--player-color);
+}
+
+.button {
+  grid-area: ready-button;
+  border: 1px solid var(--color-ui-separator);
+  background: var(--color-ui);
+  border-radius: 3px;
+  padding: 0.5em 2em;
+  color: whitesmoke;
+
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+}
+
+.button svg {
+  width: 2em;
+  height: 2em;
+}
+
+.button svg path {
+  fill: whitesmoke;
+}
+
+.button.ready {
+  background: var(--player-color);
+}

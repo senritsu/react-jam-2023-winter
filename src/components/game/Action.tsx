@@ -1,5 +1,5 @@
 import { Sphere } from "@react-three/drei";
-import { GameState } from "../logic";
+import { GameState } from "../../logic";
 import {
   BufferGeometry,
   Material,

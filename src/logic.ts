@@ -20,6 +20,9 @@ export type Segment = {
 };
 
 export interface GameState {
+  phase: "title" | "playing";
+  readyStatus: Record<string, boolean>;
+  countdown?: number;
   playerColors: Record<string, string>;
   playerIcons: Record<string, string>;
   callouts: {
@@ -42,6 +45,7 @@ export interface GameState {
 type GameActions = {
   handOverControl: (params: { targetPlayerId: string }) => void;
   requestControl: () => void;
+  ready: () => void;
 };
 
 declare global {
@@ -122,8 +126,8 @@ const makeInitialSegments = (allPlayerIds: string[]): Segment[] => {
 };
 
 // IBM Design Colors, color-blind safe, from https://davidmathlogic.com/colorblind
-const COLORS = ["#648FFF", "#785EF0", "#DC267F", "#FE6100", "#FFB000"];
-const ICONS = ["sword", "shield", "book", "bow"];
+export const COLORS = ["#648FFF", "#785EF0", "#DC267F", "#FE6100", "#FFB000"];
+export const ICONS = ["sword", "shield", "book", "bow"];
 
 Rune.initLogic({
   minPlayers: 3,
@@ -132,6 +136,8 @@ Rune.initLogic({
     const segments = makeInitialSegments(allPlayerIds);
 
     return {
+      phase: "title",
+      readyStatus: Object.fromEntries(allPlayerIds.map((id) => [id, false])),
       playerColors: Object.fromEntries(
         allPlayerIds.map((id, index) => [id, COLORS[index + 1]])
       ),
@@ -170,8 +176,33 @@ Rune.initLogic({
         position: [Math.random(), Math.random()],
       });
     },
+    ready(_, { game, playerId }) {
+      game.readyStatus[playerId] = !game.readyStatus[playerId];
+
+      if (Object.values(game.readyStatus).every((x) => x)) {
+        game.countdown = 3;
+      } else {
+        game.countdown = undefined;
+      }
+    },
   },
   update: ({ game, allPlayerIds }) => {
+    const t = Rune.gameTime();
+    const dt = (t - game.lastT) / 1000;
+    game.lastT = t;
+
+    if (game.phase === "title") {
+      if (game.countdown !== undefined) {
+        game.countdown -= dt;
+
+        if (game.countdown <= 0) {
+          game.phase = "playing";
+        }
+      }
+
+      return;
+    }
+
     const SEGMENT_BUFFER_LENGTH = 100;
     const STARTING_SPEED = 4;
     const SPEED_INCREMENT = 0.25;
@@ -180,10 +211,6 @@ Rune.initLogic({
     const DAMAGE_INCREASE_PER_LEVEL = 0.1;
     const HEAL_PER_DISTANCE = 0.4;
     const CALLOUTS_DURATION = 1100;
-
-    const t = Rune.gameTime();
-    const dt = (t - game.lastT) / 1000;
-    game.lastT = t;
 
     const distanceDelta =
       dt * (STARTING_SPEED + (game.currentLevel - 1) * SPEED_INCREMENT);

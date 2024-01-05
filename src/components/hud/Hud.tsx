@@ -1,8 +1,11 @@
-import { Players } from "rune-games-sdk";
+import type { Players } from "rune-games-sdk";
+import clsx from "clsx";
 import { GameState } from "../../logic";
 import { PlayerSelection } from "./PlayerSelection";
 import { CalloutButton } from "./CalloutButton";
 import { Callout } from "./Callout";
+
+import classes from "./Hud.module.css";
 
 export const Hud = ({
   game,
@@ -17,28 +20,29 @@ export const Hud = ({
 }) => {
   return (
     <div
-      className="ui"
+      className={classes.hud}
       style={{
         ["--player-color" as any]: game.playerColors[yourPlayerId],
         ["--active-player-color" as any]:
           game.playerColors[game.activePlayerId],
       }}
     >
-      <div className="health-bar">
+      <div className={clsx(classes.health, classes.bar)}>
         <div
-          className={`health-bar-fill ${
-            game.health < 20 ? "critical" : game.health < 50 ? "low" : ""
-          }`}
+          className={clsx(classes.health, classes.fill, {
+            low: game.health < 50,
+            critical: game.health < 20,
+          })}
           style={{ width: `${game.health}%` }}
         />
       </div>
 
-      <div className="info">
+      <div className={classes.info}>
         <h1>{game.currentLevel}</h1>
       </div>
 
       {showDebugInfo && (
-        <div className="debug">
+        <div className={classes.debug}>
           <span>total distance: {game.totalDistance.toFixed(2)}</span>
           <span>
             segment distance: {game.currentSegmentDistance.toFixed(2)}
@@ -48,7 +52,7 @@ export const Hud = ({
         </div>
       )}
 
-      <div className="callouts others">
+      <div className={clsx([classes.callouts, classes.others])}>
         {game.callouts
           .filter(({ playerId }) => playerId !== yourPlayerId)
           .map(({ playerId, createdAt, position }) => (
@@ -62,7 +66,7 @@ export const Hud = ({
             />
           ))}
       </div>
-      <div className="callouts own">
+      <div className={clsx([classes.callouts, classes.own])}>
         {game.callouts
           .filter(({ playerId }) => playerId === yourPlayerId)
           .map(({ playerId, createdAt, position }) => (
@@ -77,7 +81,7 @@ export const Hud = ({
           ))}
       </div>
 
-      <div className="divider"></div>
+      <div className={classes.divider}></div>
 
       {game.activePlayerId === yourPlayerId ? (
         <PlayerSelection

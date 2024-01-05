@@ -3,6 +3,9 @@ import { Players } from "rune-games-sdk";
 import { playerIconLookup } from "./icons/player-icons";
 import { GameState } from "../../logic";
 import { playSoundEffect } from "sounds-some-sounds";
+import clsx from "clsx";
+
+import classes from "./Hud.module.css";
 
 export const PlayerSelection = ({
   game,
@@ -14,7 +17,7 @@ export const PlayerSelection = ({
   yourPlayerId: string;
 }) => {
   return (
-    <div className="buttons in-control">
+    <div className={clsx([classes.buttons, classes.inControl])}>
       {Object.keys(players)
         .filter((x) => x !== yourPlayerId)
         .map((targetPlayerId) => {

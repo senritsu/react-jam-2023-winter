@@ -2,7 +2,7 @@ import { Box, Line, Tube } from "@react-three/drei";
 import { CubicBezierCurve3, Vector3 } from "three";
 import { useMemo } from "react";
 
-import { GameState, Segment } from "../logic";
+import { GameState, Segment } from "../../logic";
 
 export const LevelSegment = ({
   playerColors,

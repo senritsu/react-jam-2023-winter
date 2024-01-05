@@ -5,8 +5,8 @@ import { Color, CubicBezierCurve3, Vector3 } from "three";
 import { Action } from "./Action";
 import { Lights } from "./Lights";
 import { Camera } from "./Camera";
-import { GameState } from "../logic";
-import { useSound } from "./useSound.ts";
+import { GameState } from "../../logic.ts";
+import { useSound } from "./SceneContent.useSound.ts";
 
 export const SceneContents = ({
   game,

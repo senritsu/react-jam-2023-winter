@@ -1,7 +1,8 @@
 import { useEffect } from "react";
 import { playerIconLookup } from "./icons/player-icons";
 import { playSoundEffect } from "sounds-some-sounds";
-import { isInitialized } from "../useSound";
+
+import classes from "./Hud.module.css";
 
 export const Callout = ({
   playerId,
@@ -19,12 +20,12 @@ export const Callout = ({
   const [x, y] = position;
 
   useEffect(() => {
-    if (isInitialized) playSoundEffect("select", { volume: 0.5 });
+    playSoundEffect("select", { volume: 0.5 });
   }, []);
 
   return (
     <div
-      className="callout"
+      className={classes.callout}
       style={{
         top: `${20 + y * 60}%`,
         left: `${20 + x * 60}%`,
