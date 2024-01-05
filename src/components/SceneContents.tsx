@@ -32,7 +32,7 @@ export const SceneContents = ({
     [game.currentLevelBackground]
   );
 
-  useSound(!game.correctPlayerIsInControl);
+  useSound(game);
 
   useFrame(() => {
     curve.getPointAt(

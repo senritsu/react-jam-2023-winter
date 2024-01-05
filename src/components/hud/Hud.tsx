@@ -18,10 +18,19 @@ export const Hud = ({
   return (
     <div
       className="ui"
-      style={{ ["--player-color" as any]: game.playerColors[yourPlayerId] }}
+      style={{
+        ["--player-color" as any]: game.playerColors[yourPlayerId],
+        ["--active-player-color" as any]:
+          game.playerColors[game.activePlayerId],
+      }}
     >
       <div className="health-bar">
-        <div className="health-bar-fill" style={{ width: `${game.health}%` }} />
+        <div
+          className={`health-bar-fill ${
+            game.health < 20 ? "critical" : game.health < 50 ? "low" : ""
+          }`}
+          style={{ width: `${game.health}%` }}
+        />
       </div>
 
       <div className="info">
@@ -67,6 +76,9 @@ export const Hud = ({
             />
           ))}
       </div>
+
+      <div className="divider"></div>
+
       {game.activePlayerId === yourPlayerId ? (
         <PlayerSelection
           game={game}

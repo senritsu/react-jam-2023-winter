@@ -6,7 +6,10 @@ import {
   playMml,
   generateMml,
   update,
+  playSoundEffect,
+  stopMml,
 } from "sounds-some-sounds";
+import { GameState } from "../logic";
 
 const EFFECT_SEED = 20; // 11;
 const BGM_SEED = 11;
@@ -35,7 +38,7 @@ const setup = () => {
   playMml(bgmDefault);
 };
 
-export const useSound = (danger: boolean) => {
+export const useSound = (game: GameState) => {
   useEffect(() => {
     init(EFFECT_SEED);
 
@@ -48,16 +51,28 @@ export const useSound = (danger: boolean) => {
     };
   }, []);
 
-  const previousDanger = useRef(danger);
+  const wasInDanger = useRef(false);
+  const isInDanger = !game.correctPlayerIsInControl;
+
+  const previousLevel = useRef(game.currentLevel);
 
   useFrame(() => {
-    if (isInitialized) {
-      update();
+    if (!isInitialized) return;
 
-      if (previousDanger.current !== danger) {
-        playMml(danger ? bgmDanger : bgmDefault);
-        previousDanger.current = danger;
-      }
+    update();
+
+    if (wasInDanger.current !== isInDanger && game.health > 0) {
+      playMml(isInDanger ? bgmDanger : bgmDefault);
+      wasInDanger.current = isInDanger;
+    }
+
+    if (game.health <= 0) {
+      stopMml();
+    }
+
+    if (game.currentLevel !== previousLevel.current) {
+      playSoundEffect("coin");
+      previousLevel.current = game.currentLevel;
     }
   });
 };

@@ -19,11 +19,18 @@
     "health health health" auto
     "info info info" auto
     "callouts-left center callouts-right" 1fr
+    "divider divider divider" auto
     "buttons buttons buttons" auto / 1fr 3fr 1fr;
   place-items: stretch;
   z-index: 1;
   pointer-events: none;
   overflow: hidden;
+}
+
+.divider {
+  grid-area: divider;
+  background: var(--active-player-color);
+  height: 0.5em;
 }
 
 .buttons {
@@ -60,7 +67,7 @@
 .health-bar {
   grid-area: health;
   width: 100%;
-  height: 10px;
+  height: 0.5em;
   background: #333;
   margin-bottom: 1em;
 }
@@ -68,6 +75,14 @@
 .health-bar-fill {
   height: 100%;
   background: limegreen;
+}
+
+.health-bar-fill.low {
+  background: goldenrod;
+}
+
+.health-bar-fill.critical {
+  background: red;
 }
 
 .callouts {
