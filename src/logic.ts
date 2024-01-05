@@ -5,7 +5,6 @@ import {
   add,
   copy,
   estimateCurveLength,
-  getLength,
   multiplyScalar,
   normalize,
   sub,
