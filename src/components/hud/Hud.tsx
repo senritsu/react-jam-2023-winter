@@ -1,11 +1,11 @@
 import type { Players } from "rune-games-sdk";
 import clsx from "clsx";
-import { GameState } from "../../logic";
 import { PlayerSelection } from "./PlayerSelection";
 import { CalloutButton } from "./CalloutButton";
 import { Callout } from "./Callout";
 
 import classes from "./Hud.module.css";
+import { GameState } from "../../logic.types";
 
 export const Hud = ({
   game,
@@ -23,8 +23,9 @@ export const Hud = ({
       className={classes.hud}
       style={{
         ["--player-color" as any]: game.playerColors[yourPlayerId],
-        ["--active-player-color" as any]:
-          game.playerColors[game.activePlayerId],
+        ["--active-player-color" as any]: game.activePlayerId
+          ? game.playerColors[game.activePlayerId]
+          : "white",
       }}
     >
       <div className={clsx(classes.health, classes.bar)}>
@@ -47,7 +48,7 @@ export const Hud = ({
           <span>
             segment distance: {game.currentSegmentDistance.toFixed(2)}
           </span>
-          <span>segment: {game.currentSegment.id}</span>
+          <span>segment: {game.currentSegmentId}</span>
           <span>level: {game.currentLevel}</span>
         </div>
       )}

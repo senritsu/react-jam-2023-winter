@@ -7,7 +7,7 @@ import {
   playSoundEffect,
   stopMml,
 } from "sounds-some-sounds";
-import { GameState } from "../../logic";
+import { GameState } from "../../logic.types";
 
 const BGM_SEED = 11;
 const DANGER_BGM_SEED = 10;

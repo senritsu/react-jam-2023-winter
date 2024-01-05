@@ -5,8 +5,8 @@ import { Color, CubicBezierCurve3, Vector3 } from "three";
 import { Action } from "./Action";
 import { Lights } from "./Lights";
 import { Camera } from "./Camera";
-import { GameState } from "../../logic.ts";
 import { useSound } from "./SceneContent.useSound.ts";
+import { GameState } from "../../logic.types.ts";
 
 export const SceneContents = ({
   game,
@@ -20,9 +20,11 @@ export const SceneContents = ({
   const curve = useMemo(
     () =>
       new CubicBezierCurve3(
-        ...game.currentSegment?.curveParameters.map((x) => new Vector3(...x))
+        ...game.segments[game.currentSegmentId].curveParameters.map(
+          (x) => new Vector3(...x)
+        )
       ),
-    [game.currentSegment]
+    [game.currentSegmentId, game.segments]
   );
 
   const { scene } = useThree();
@@ -35,7 +37,7 @@ export const SceneContents = ({
 
   useFrame(() => {
     curve.getPointAt(
-      game.currentSegmentDistance / game.currentSegment.length,
+      game.currentSegmentDistance / game.segments[game.currentSegmentId].length,
       playerPosition.current
     );
 

@@ -7,6 +7,9 @@ export type CubicBezierCurve3 = [
   end: Vector3
 ];
 
+export const randomBetween = (a: number, b: number) =>
+  a + Math.random() * (b - a);
+
 export const copy = (v: Vector3): Vector3 => [...v];
 
 export const add = (a: Vector3, b: Vector3): Vector3 => [

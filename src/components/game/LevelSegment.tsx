@@ -2,7 +2,8 @@ import { Box, Line, Tube } from "@react-three/drei";
 import { CubicBezierCurve3, Vector3 } from "three";
 import { useMemo } from "react";
 
-import { GameState, Segment } from "../../logic";
+import { GameState } from "../../logic.types";
+import { TrackSegment } from "../../logic.levelGeneration";
 
 export const LevelSegment = ({
   playerColors,
@@ -16,7 +17,7 @@ export const LevelSegment = ({
   isCurrent?: boolean;
   isCorrect?: boolean;
   yourPlayerId?: string;
-  segment: Segment;
+  segment: TrackSegment;
   showDebugInfo?: boolean;
 }) => {
   const ownSegmentOrSpectator = !yourPlayerId || segment.owner === yourPlayerId;

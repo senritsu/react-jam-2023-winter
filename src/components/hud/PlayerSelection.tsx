@@ -1,11 +1,11 @@
 import { Players } from "rune-games-sdk";
 
 import { playerIconLookup } from "./icons/player-icons";
-import { GameState } from "../../logic";
 import { playSoundEffect } from "sounds-some-sounds";
 import clsx from "clsx";
 
 import classes from "./Hud.module.css";
+import { GameState } from "../../logic.types";
 
 export const PlayerSelection = ({
   game,

@@ -1,7 +1,8 @@
 import clsx from "clsx";
 import classes from "./GetReady.module.css";
-import { COLORS, GameState } from "../../logic";
+import { COLORS } from "../../logic";
 import { playerIconLookup } from "../hud/icons/player-icons";
+import { GameState } from "../../logic.types";
 
 export const GetReady = ({
   game,
