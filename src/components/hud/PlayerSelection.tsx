@@ -3,6 +3,7 @@ import { Players } from "rune-games-sdk";
 import { playerIconLookup } from "./icons/player-icons";
 import { GameState } from "../../logic";
 import { FC } from "react";
+import { playSoundEffect } from "sounds-some-sounds";
 
 export const PlayerSelection = ({
   game,
@@ -24,7 +25,10 @@ export const PlayerSelection = ({
             <button
               key={targetPlayerId}
               type="button"
-              onClick={() => Rune.actions.handOverControl({ targetPlayerId })}
+              onClick={() => {
+                playSoundEffect("click");
+                Rune.actions.handOverControl({ targetPlayerId });
+              }}
               style={{
                 ["--player-color" as any]: game.playerColors[targetPlayerId],
               }}

@@ -2,7 +2,7 @@ import { Players } from "rune-games-sdk";
 import { GameState } from "../../logic";
 import { PlayerSelection } from "./PlayerSelection";
 import { CalloutButton } from "./CalloutButton";
-import { Callouts } from "./Callouts";
+import { Callout } from "./Callout";
 
 export const Hud = ({
   game,
@@ -40,22 +40,32 @@ export const Hud = ({
       )}
 
       <div className="callouts others">
-        <Callouts
-          callouts={game.callouts.filter(
-            ({ playerId }) => playerId !== yourPlayerId
-          )}
-          playerColors={game.playerColors}
-          playerIcons={game.playerIcons}
-        />
+        {game.callouts
+          .filter(({ playerId }) => playerId !== yourPlayerId)
+          .map(({ playerId, createdAt, position }) => (
+            <Callout
+              key={`${playerId}-${createdAt}`}
+              playerId={playerId}
+              createdAt={createdAt}
+              position={position}
+              playerIcons={game.playerIcons}
+              playerColors={game.playerColors}
+            />
+          ))}
       </div>
       <div className="callouts own">
-        <Callouts
-          callouts={game.callouts.filter(
-            ({ playerId }) => playerId === yourPlayerId
-          )}
-          playerColors={game.playerColors}
-          playerIcons={game.playerIcons}
-        />
+        {game.callouts
+          .filter(({ playerId }) => playerId === yourPlayerId)
+          .map(({ playerId, createdAt, position }) => (
+            <Callout
+              key={`${playerId}-${createdAt}`}
+              playerId={playerId}
+              createdAt={createdAt}
+              position={position}
+              playerIcons={game.playerIcons}
+              playerColors={game.playerColors}
+            />
+          ))}
       </div>
       {game.activePlayerId === yourPlayerId ? (
         <PlayerSelection

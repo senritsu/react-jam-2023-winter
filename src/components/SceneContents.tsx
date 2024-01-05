@@ -6,6 +6,8 @@ import { Action } from "./Action";
 import { Lights } from "./Lights";
 import { Camera } from "./Camera";
 import { GameState } from "../logic";
+import { useSound } from "./useSound.ts";
+import { update } from "sounds-some-sounds";
 
 export const SceneContents = ({
   game,
@@ -29,6 +31,8 @@ export const SceneContents = ({
     () => new Color(game.currentLevelBackground),
     [game.currentLevelBackground]
   );
+
+  useSound(!game.correctPlayerIsInControl);
 
   useFrame(() => {
     curve.getPointAt(

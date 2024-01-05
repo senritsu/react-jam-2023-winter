@@ -11,6 +11,7 @@ import {
 import { useFrame } from "@react-three/fiber";
 import { MutableRefObject, useRef } from "react";
 import { LevelSegment } from "./LevelSegment";
+import { playSoundEffect } from "sounds-some-sounds";
 
 export const Action = ({
   game,
@@ -30,10 +31,17 @@ export const Action = ({
       >
     >(null);
 
+  const gameover = useRef(false);
+
   useFrame(() => {
     if (!sphereRef.current || !playerPosition) return;
 
     sphereRef.current.position.copy(playerPosition.current);
+
+    if (game.health <= 0 && !gameover.current) {
+      playSoundEffect("explosion");
+      gameover.current = true;
+    }
   });
 
   const orbColor = game.playerColors[game.activePlayerId];

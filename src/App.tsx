@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Canvas, useFrame } from "@react-three/fiber";
+import { Canvas } from "@react-three/fiber";
 import reactLogo from "./assets/rune.svg";
 import viteLogo from "/vite.svg";
 import "./App.css";
