@@ -38,6 +38,7 @@ Rune.initLogic({
         MAX_SEGMENT_LENGTH: 20,
       },
       phase: "title",
+      paused: false,
       readyStatus: Object.fromEntries(allPlayerIds.map((id) => [id, false])),
       playerColors: Object.fromEntries(
         allPlayerIds.map((id, index) => [id, COLORS[index + 1]])
@@ -85,6 +86,9 @@ Rune.initLogic({
         game.countdown = undefined;
       }
     },
+    pause(_, { game }) {
+      game.paused = !game.paused;
+    },
   },
   update: ({ game, allPlayerIds }) => {
     const t = Rune.gameTime();
@@ -96,10 +100,12 @@ Rune.initLogic({
     }
 
     if (game.phase === "playing") {
-      const distanceDelta = move({ game, dt });
+      if (!game.paused) {
+        const distanceDelta = move({ game, dt });
 
-      incrementLevel({ game });
-      updateHealth({ game, distanceDelta });
+        incrementLevel({ game });
+        updateHealth({ game, distanceDelta });
+      }
 
       checkGameover({ game, allPlayerIds });
 

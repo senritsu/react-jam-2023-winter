@@ -18,6 +18,7 @@ export type GameSettings = {
 export interface GameState {
   settings: GameSettings;
   phase: "title" | "playing";
+  paused: boolean;
   readyStatus: Record<string, boolean>;
   countdown?: number;
   playerColors: Record<string, string>;
@@ -43,4 +44,5 @@ export type GameActions = {
   handOverControl: (params: { targetPlayerId: string }) => void;
   requestControl: () => void;
   ready: () => void;
+  pause: () => void;
 };

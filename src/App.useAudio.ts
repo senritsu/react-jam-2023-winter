@@ -11,6 +11,8 @@ export const setup = () => {
   startAudio();
 
   isInitialized = true;
+
+  document.removeEventListener("pointerdown", setup);
 };
 
 export const useAudio = () => {

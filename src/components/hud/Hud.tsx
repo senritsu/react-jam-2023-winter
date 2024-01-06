@@ -1,97 +1,49 @@
-import type { Players } from "rune-games-sdk";
-import clsx from "clsx";
 import { PlayerSelection } from "./PlayerSelection";
 import { CalloutButton } from "./CalloutButton";
-import { Callout } from "./Callout";
 
 import classes from "./Hud.module.css";
-import { GameState } from "../../logic.types";
+import { useRuneStore } from "../../runeStore";
+import { DebugInfo } from "./DebugInfo";
+import { HealthBar } from "./HealthBar";
+import { Callouts } from "./Callouts";
 
-export const Hud = ({
-  game,
-  yourPlayerId,
-  players,
-  showDebugInfo,
-}: {
-  game: GameState;
-  yourPlayerId: string;
-  players: Players;
-  showDebugInfo?: boolean;
-}) => {
+export const Hud = ({ showDebugInfo }: { showDebugInfo?: boolean }) => {
+  const yourPlayerId = useRuneStore((state) => state.yourPlayerId);
+  const activePlayerId = useRuneStore((state) => state.game.activePlayerId);
+  const playerColors = useRuneStore((state) => state.game.playerColors);
+
+  const currentLevel = useRuneStore((state) => state.game.currentLevel);
+
   return (
     <div
       className={classes.hud}
       style={{
-        ["--player-color" as any]: game.playerColors[yourPlayerId],
-        ["--active-player-color" as any]: game.activePlayerId
-          ? game.playerColors[game.activePlayerId]
+        ["--player-color" as any]: playerColors[yourPlayerId],
+        ["--active-player-color" as any]: activePlayerId
+          ? playerColors[activePlayerId]
           : "white",
       }}
     >
-      <div className={clsx(classes.health, classes.bar)}>
-        <div
-          className={clsx(classes.health, classes.fill, {
-            low: game.health < 50,
-            critical: game.health < 20,
-          })}
-          style={{ width: `${game.health}%` }}
-        />
-      </div>
+      <HealthBar />
 
       <div className={classes.info}>
-        <h1>{game.currentLevel}</h1>
+        <h1>{currentLevel}</h1>
       </div>
 
-      {showDebugInfo && (
-        <div className={classes.debug}>
-          <span>total distance: {game.totalDistance.toFixed(2)}</span>
-          <span>
-            segment distance: {game.currentSegmentDistance.toFixed(2)}
-          </span>
-          <span>segment: {game.currentSegmentId}</span>
-          <span>level: {game.currentLevel}</span>
-        </div>
-      )}
+      {showDebugInfo && <DebugInfo />}
 
-      <div className={clsx([classes.callouts, classes.others])}>
-        {game.callouts
-          .filter(({ playerId }) => playerId !== yourPlayerId)
-          .map(({ playerId, createdAt, position }) => (
-            <Callout
-              key={`${playerId}-${createdAt}`}
-              playerId={playerId}
-              createdAt={createdAt}
-              position={position}
-              playerIcons={game.playerIcons}
-              playerColors={game.playerColors}
-            />
-          ))}
-      </div>
-      <div className={clsx([classes.callouts, classes.own])}>
-        {game.callouts
-          .filter(({ playerId }) => playerId === yourPlayerId)
-          .map(({ playerId, createdAt, position }) => (
-            <Callout
-              key={`${playerId}-${createdAt}`}
-              playerId={playerId}
-              createdAt={createdAt}
-              position={position}
-              playerIcons={game.playerIcons}
-              playerColors={game.playerColors}
-            />
-          ))}
-      </div>
+      <Callouts />
 
-      <div className={classes.divider}></div>
+      {yourPlayerId && (
+        <>
+          <div className={classes.divider} />
 
-      {game.activePlayerId === yourPlayerId ? (
-        <PlayerSelection
-          game={game}
-          players={players}
-          yourPlayerId={yourPlayerId}
-        />
-      ) : (
-        <CalloutButton />
+          {activePlayerId === yourPlayerId ? (
+            <PlayerSelection />
+          ) : (
+            <CalloutButton />
+          )}
+        </>
       )}
     </div>
   );

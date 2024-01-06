@@ -2,19 +2,26 @@ import clsx from "clsx";
 import classes from "./GetReady.module.css";
 import { COLORS } from "../../logic";
 import { playerIconLookup } from "../hud/icons/player-icons";
-import { GameState } from "../../logic.types";
+import { useRuneStore } from "../../runeStore";
 
-export const GetReady = ({
-  game,
-  yourPlayerId,
-}: {
-  game: GameState;
-  yourPlayerId?: string;
-}) => {
-  const allColors = COLORS.slice(1);
+const tutorialMessages = [
+  "Glow = good",
+  "One player is active",
+  "Switch if needed",
+  "Communicate",
+];
+
+const tutorialMessageColors = COLORS.slice(1);
+
+export const GetReady = () => {
+  const yourPlayerId = useRuneStore((state) => state.yourPlayerId);
+  const playerIcons = useRuneStore((state) => state.game.playerIcons);
+  const playerColors = useRuneStore((state) => state.game.playerColors);
+  const readyStatus = useRuneStore((state) => state.game.readyStatus);
+  const countdown = useRuneStore((state) => state.game.countdown);
 
   const YourIcon = yourPlayerId
-    ? playerIconLookup[game.playerIcons[yourPlayerId]]
+    ? playerIconLookup[playerIcons[yourPlayerId]]
     : null;
 
   return (
@@ -24,40 +31,22 @@ export const GetReady = ({
       </header>
       <section className={classes.tutorial}>
         <ol>
-          <li
-            style={{
-              color: allColors[0],
-            }}
-          >
-            Glow = good
-          </li>
-          <li
-            style={{
-              color: allColors[1],
-            }}
-          >
-            One player is active
-          </li>
-          <li
-            style={{
-              color: allColors[2],
-            }}
-          >
-            Switch if needed
-          </li>
-          <li
-            style={{
-              color: allColors[3],
-            }}
-          >
-            Communicate
-          </li>
+          {tutorialMessages.map((message, i) => (
+            <li
+              key={message}
+              style={{
+                color: tutorialMessageColors[i],
+              }}
+            >
+              {message}
+            </li>
+          ))}
         </ol>
       </section>
       <section className={classes.status}>
-        {Object.entries(game.readyStatus).map(([playerId, ready]) => {
-          const Icon = playerIconLookup[game.playerIcons[playerId]];
-          const color = game.playerColors[playerId];
+        {Object.entries(readyStatus).map(([playerId, ready]) => {
+          const Icon = playerIconLookup[playerIcons[playerId]];
+          const color = playerColors[playerId];
 
           return (
             <div
@@ -73,9 +62,9 @@ export const GetReady = ({
 
       {yourPlayerId && YourIcon && (
         <button
-          style={{ ["--player-color" as any]: game.playerColors[yourPlayerId] }}
+          style={{ ["--player-color" as any]: playerColors[yourPlayerId] }}
           className={clsx(classes.button, {
-            [classes.ready]: game.readyStatus[yourPlayerId],
+            [classes.ready]: readyStatus[yourPlayerId],
           })}
           onClick={() => Rune.actions.ready()}
         >
@@ -84,11 +73,9 @@ export const GetReady = ({
         </button>
       )}
 
-      {game.countdown && (
+      {countdown && (
         <div className={classes.countdown}>
-          <span key={Math.ceil(game.countdown)}>
-            {Math.ceil(game.countdown)}
-          </span>
+          <span key={Math.ceil(countdown)}>{Math.ceil(countdown)}</span>
         </div>
       )}
     </main>

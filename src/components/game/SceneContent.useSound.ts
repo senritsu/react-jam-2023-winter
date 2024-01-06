@@ -6,8 +6,10 @@ import {
   update,
   playSoundEffect,
   stopMml,
+  type Track,
 } from "sounds-some-sounds";
-import { GameState } from "../../logic.types";
+import { useRuneStore } from "../../runeStore";
+import { isInitialized } from "../../App.useAudio";
 
 const BGM_SEED = 11;
 const DANGER_BGM_SEED = 10;
@@ -24,33 +26,54 @@ const bgmDefault = generateMml({
   drumPartRatio: 0.5,
 });
 
-export const useSound = (game: GameState) => {
-  useEffect(() => {
-    return () => {
-      stopMml();
-    };
-  }, []);
+export const useSoundUpdate = () => {
+  useFrame(() => {
+    if (!isInitialized) return;
+
+    update();
+  });
+};
+
+export const useDynamicBgm = () => {
+  const correctPlayerIsInControl = useRuneStore(
+    (state) => state.game.correctPlayerIsInControl
+  );
+  const health = useRuneStore((state) => state.game.health);
+
+  const track = useRef<Track>();
 
   const wasInDanger = useRef<boolean>();
-  const isInDanger = !game.correctPlayerIsInControl;
-
-  const previousLevel = useRef(game.currentLevel);
+  const isInDanger = !correctPlayerIsInControl;
 
   useFrame(() => {
-    update();
+    if (!isInitialized) return;
 
-    if (wasInDanger.current !== isInDanger && game.health > 0) {
-      playMml(isInDanger ? bgmDanger : bgmDefault);
+    if (wasInDanger.current !== isInDanger && health > 0) {
+      const playhead = track.current?.nextNotesTime ?? 0;
+
+      track.current = playMml(isInDanger ? bgmDanger : bgmDefault);
+      track.current.nextNotesTime = playhead;
+
       wasInDanger.current = isInDanger;
     }
 
-    if (game.health <= 0) {
+    if (health <= 0) {
       stopMml();
     }
+  });
+};
 
-    if (game.currentLevel !== previousLevel.current) {
+export const useLevelChangeSound = () => {
+  const currentLevel = useRuneStore((state) => state.game.currentLevel);
+
+  const previousLevel = useRef(currentLevel);
+
+  useFrame(() => {
+    if (!isInitialized) return;
+
+    if (currentLevel !== previousLevel.current) {
       playSoundEffect("coin");
-      previousLevel.current = game.currentLevel;
+      previousLevel.current = currentLevel;
     }
   });
 };

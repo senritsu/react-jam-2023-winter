@@ -1,27 +1,22 @@
-import { Players } from "rune-games-sdk";
-
-import { playerIconLookup } from "./icons/player-icons";
 import { playSoundEffect } from "sounds-some-sounds";
 import clsx from "clsx";
 
+import { playerIconLookup } from "./icons/player-icons";
 import classes from "./Hud.module.css";
-import { GameState } from "../../logic.types";
+import { useRuneStore } from "../../runeStore";
 
-export const PlayerSelection = ({
-  game,
-  players,
-  yourPlayerId,
-}: {
-  game: GameState;
-  players: Players;
-  yourPlayerId: string;
-}) => {
+export const PlayerSelection = () => {
+  const players = useRuneStore((state) => state.players);
+  const yourPlayerId = useRuneStore((state) => state.yourPlayerId);
+  const playerIcons = useRuneStore((state) => state.game.playerIcons);
+  const playerColors = useRuneStore((state) => state.game.playerColors);
+
   return (
     <div className={clsx([classes.buttons, classes.inControl])}>
       {Object.keys(players)
         .filter((x) => x !== yourPlayerId)
         .map((targetPlayerId) => {
-          const Icon = playerIconLookup[game.playerIcons[targetPlayerId]];
+          const Icon = playerIconLookup[playerIcons[targetPlayerId]];
 
           return (
             <button
@@ -32,7 +27,7 @@ export const PlayerSelection = ({
                 Rune.actions.handOverControl({ targetPlayerId });
               }}
               style={{
-                ["--player-color" as any]: game.playerColors[targetPlayerId],
+                ["--player-color" as any]: playerColors[targetPlayerId],
               }}
             >
               <Icon />
