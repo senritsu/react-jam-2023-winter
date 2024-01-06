@@ -50,7 +50,7 @@ export const GetReady = ({
               color: allColors[3],
             }}
           >
-            Tell the others when
+            Communicate
           </li>
         </ol>
       </section>
