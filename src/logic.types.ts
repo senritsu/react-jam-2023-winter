@@ -1,4 +1,5 @@
 import { TrackSegment } from "./logic.levelGeneration";
+import { Vector3 } from "./logic.math";
 
 export type GameSettings = {
   CALLOUTS_DURATION: number;
@@ -13,6 +14,19 @@ export type GameSettings = {
   SEGMENT_BUFFER_LENGTH: number;
   MIN_SEGMENT_LENGTH: number;
   MAX_SEGMENT_LENGTH: number;
+  ENEMY_COUNTDOWN: number;
+  ENEMY_COUNTDOWN_DECREMENT: number;
+  ENEMY_COUNTDOWN_MIN: number;
+  ENEMY_LIFETIME: number;
+  ENEMY_DAMAGE: number;
+};
+
+export type Enemy = {
+  id: string;
+  playerId: string;
+  positions: Vector3[];
+  createdAt: number;
+  lifetime: number;
 };
 
 export interface GameState {
@@ -39,6 +53,8 @@ export interface GameState {
   correctPlayerIsInControl: boolean;
   health: number;
   lastT: number;
+  enemyCountdown: number;
+  enemies: Enemy[];
 }
 
 export type GameActions = {
@@ -46,4 +62,5 @@ export type GameActions = {
   requestControl: () => void;
   ready: () => void;
   pause: () => void;
+  tap: (params: { enemyId: string }) => void;
 };

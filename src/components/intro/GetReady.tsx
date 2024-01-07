@@ -8,7 +8,7 @@ const tutorialMessages = [
   "Glow = good",
   "One player is active",
   "Switch if needed",
-  "Communicate",
+  "Tap your cubes",
 ];
 
 const tutorialMessageColors = COLORS.slice(1);

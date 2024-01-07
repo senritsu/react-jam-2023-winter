@@ -1,4 +1,5 @@
 import { addSegment, makeInitialSegments } from "./logic.levelGeneration";
+import { add, randomBetween } from "./logic.math";
 import { GameState } from "./logic.types";
 
 export const updateTitleScreen = ({
@@ -129,4 +130,72 @@ export const pruneSegments = ({ game }: { game: GameState }) => {
     .map(Number)
     .filter((id) => id <= game.currentSegmentId - 2)
     .forEach((id) => delete game.segments[id]);
+};
+
+export const updateEnemies = ({
+  game,
+  dt,
+}: {
+  game: GameState;
+  dt: number;
+}) => {
+  for (const enemy of game.enemies) {
+    enemy.lifetime -= dt;
+
+    if (enemy.lifetime <= 0) {
+      game.enemies = game.enemies.filter(({ id }) => id !== enemy.id);
+      game.health = Math.max(0, game.health - game.settings.ENEMY_DAMAGE);
+    }
+  }
+};
+
+export const spawnEnemies = ({
+  game,
+  allPlayerIds,
+  t,
+  dt,
+}: {
+  game: GameState;
+  allPlayerIds: string[];
+  t: number;
+  dt: number;
+}) => {
+  game.enemyCountdown -= dt;
+
+  if (game.enemyCountdown > 0) return;
+
+  game.enemyCountdown += Math.max(
+    game.settings.ENEMY_COUNTDOWN_MIN,
+    game.settings.ENEMY_COUNTDOWN -
+      game.currentLevel * game.settings.ENEMY_COUNTDOWN_DECREMENT
+  );
+
+  const position = add(
+    game.segments[game.currentSegmentId + 1].curveParameters[3],
+    [randomBetween(-1, 1), randomBetween(1, 3), 3]
+  );
+
+  const positions = [
+    position,
+    add(position, [
+      randomBetween(-0.5, 0.5),
+      randomBetween(-0.5, 0.5),
+      randomBetween(1, 3),
+    ]),
+    add(position, [
+      randomBetween(-0.5, 0.5),
+      randomBetween(-0.5, 0.5),
+      randomBetween(4, 6),
+    ]),
+  ];
+
+  const enemy = {
+    id: `${t}`,
+    playerId: allPlayerIds[Math.floor(Math.random() * allPlayerIds.length)],
+    createdAt: t,
+    positions,
+    lifetime: game.settings.ENEMY_LIFETIME,
+  };
+
+  game.enemies.push(enemy);
 };

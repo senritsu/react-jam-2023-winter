@@ -10,6 +10,8 @@ import {
   move,
   updateHealth,
   updateTitleScreen,
+  updateEnemies,
+  spawnEnemies,
 } from "./logic.update";
 
 // IBM Design Colors, color-blind safe, from https://davidmathlogic.com/colorblind
@@ -37,6 +39,11 @@ Rune.initLogic({
         SEGMENT_BUFFER_LENGTH: 100,
         MIN_SEGMENT_LENGTH: 10,
         MAX_SEGMENT_LENGTH: 20,
+        ENEMY_COUNTDOWN: 4,
+        ENEMY_COUNTDOWN_DECREMENT: 0.1,
+        ENEMY_COUNTDOWN_MIN: 1,
+        ENEMY_LIFETIME: 4,
+        ENEMY_DAMAGE: 10,
       },
       phase: "title",
       paused: false,
@@ -60,6 +67,8 @@ Rune.initLogic({
       health: 100,
       lastT: 0,
       callouts: [],
+      enemyCountdown: 3,
+      enemies: [],
     };
   },
   actions: {
@@ -93,6 +102,13 @@ Rune.initLogic({
     pause(_, { game }) {
       game.paused = !game.paused;
     },
+    tap({ enemyId }, { game, playerId }) {
+      const enemy = game.enemies.find((x) => x.id === enemyId);
+
+      if (enemy && enemy.playerId === playerId) {
+        game.enemies = game.enemies.filter((x) => x.id !== enemyId);
+      }
+    },
   },
   update: ({ game, allPlayerIds }) => {
     const t = Rune.gameTime();
@@ -109,6 +125,9 @@ Rune.initLogic({
 
         incrementLevel({ game });
         updateHealth({ game, distanceDelta });
+
+        updateEnemies({ game, dt });
+        spawnEnemies({ game, allPlayerIds, t, dt });
       }
 
       checkGameover({ game, allPlayerIds });

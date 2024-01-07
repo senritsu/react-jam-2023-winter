@@ -13,6 +13,7 @@ import { usePlayerPosition } from "./usePlayerPosition.ts";
 import { GameOverSound } from "./GameOverSound.tsx";
 import { PlayerMarker } from "./PlayerMarker.tsx";
 import { Level } from "./Level.tsx";
+import { Enemies } from "./Enemies.tsx";
 
 export const SceneContents = () => {
   useDynamicBgm();
@@ -32,6 +33,7 @@ export const SceneContents = () => {
 
       <Level />
       <PlayerMarker playerPosition={playerPosition} />
+      <Enemies playerPosition={playerPosition} />
 
       <Suspense fallback={null}>
         <EffectComposer>
