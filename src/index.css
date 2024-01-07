@@ -3,7 +3,7 @@
   line-height: 1.5;
   font-weight: 400;
 
-  color: whitesmoke;
+  color: var(--color-text);
   background-color: #111;
 
   font-synthesis: none;
@@ -12,6 +12,7 @@
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
 
+  --color-text: whitesmoke;
   --color-ui: #333;
   --color-ui-separator: #444;
 }

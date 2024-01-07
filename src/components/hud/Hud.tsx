@@ -6,13 +6,12 @@ import { useRuneStore } from "../../runeStore";
 import { DebugInfo } from "./DebugInfo";
 import { HealthBar } from "./HealthBar";
 import { Callouts } from "./Callouts";
+import { LevelInfo } from "./LevelInfo";
 
 export const Hud = ({ showDebugInfo }: { showDebugInfo?: boolean }) => {
   const yourPlayerId = useRuneStore((state) => state.yourPlayerId);
   const activePlayerId = useRuneStore((state) => state.game.activePlayerId);
   const playerColors = useRuneStore((state) => state.game.playerColors);
-
-  const currentLevel = useRuneStore((state) => state.game.currentLevel);
 
   return (
     <div
@@ -26,9 +25,7 @@ export const Hud = ({ showDebugInfo }: { showDebugInfo?: boolean }) => {
     >
       <HealthBar />
 
-      <div className={classes.info}>
-        <h1>{currentLevel}</h1>
-      </div>
+      <LevelInfo />
 
       {showDebugInfo && <DebugInfo />}
 

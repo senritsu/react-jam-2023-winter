@@ -102,9 +102,22 @@
   line-height: 1;
 }
 
-.info > h1 {
+.info .level {
   margin: 0;
-  font-size: 5em;
+  font-size: 4em;
+}
+
+.info .progress {
+  width: 1em;
+  height: 1em;
+}
+
+.info .progress circle.fill {
+  stroke: var(--active-player-color);
+}
+
+.info > * {
+  grid-area: 1 / 1 / 2 / 2;
 }
 
 .debug {
