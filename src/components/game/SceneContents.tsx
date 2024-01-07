@@ -3,9 +3,11 @@ import { Suspense } from "react";
 import { Lights } from "./Lights";
 import { Camera } from "./Camera";
 import {
+  useActivePlayerChangeSound,
+  useCalloutSounds,
   useDynamicBgm,
+  useIncreasingBpm,
   useLevelChangeSound,
-  useSoundUpdate,
 } from "./SceneContent.useSound.ts";
 import { usePlayerPosition } from "./usePlayerPosition.ts";
 import { GameOverSound } from "./GameOverSound.tsx";
@@ -13,9 +15,11 @@ import { PlayerMarker } from "./PlayerMarker.tsx";
 import { Level } from "./Level.tsx";
 
 export const SceneContents = () => {
-  useSoundUpdate();
   useDynamicBgm();
   useLevelChangeSound();
+  useActivePlayerChangeSound();
+  useCalloutSounds();
+  useIncreasingBpm();
 
   const playerPosition = usePlayerPosition();
 

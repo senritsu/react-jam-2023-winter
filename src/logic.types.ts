@@ -23,6 +23,7 @@ export interface GameState {
   countdown?: number;
   playerColors: Record<string, string>;
   playerIcons: Record<string, string>;
+  playerNotes: Record<string, string>;
   callouts: {
     playerId: string;
     createdAt: number;

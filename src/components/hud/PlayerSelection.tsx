@@ -1,4 +1,3 @@
-import { playSoundEffect } from "sounds-some-sounds";
 import clsx from "clsx";
 
 import { playerIconLookup } from "./icons/player-icons";
@@ -23,7 +22,6 @@ export const PlayerSelection = () => {
               key={targetPlayerId}
               type="button"
               onClick={() => {
-                playSoundEffect("click");
                 Rune.actions.handOverControl({ targetPlayerId });
               }}
               style={{

@@ -22,8 +22,8 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "rune-games-sdk": "^4.16.17",
-    "sounds-some-sounds": "^3.0.0",
     "three": "^0.160.0",
+    "tone": "^14.7.77",
     "zustand": "^4.4.7"
   },
   "devDependencies": {

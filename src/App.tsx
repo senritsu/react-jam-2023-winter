@@ -2,31 +2,18 @@ import { Canvas } from "@react-three/fiber";
 import { Color, FogExp2 } from "three";
 
 import classes from "./App.module.css";
-import { useAudio } from "./App.useAudio.ts";
 import { GetReady } from "./components/intro/GetReady.tsx";
 import { SceneContents } from "./components/game/SceneContents.tsx";
 import { Hud } from "./components/hud/Hud.tsx";
 import { useRuneStore } from "./runeStore.ts";
-import { useEffect } from "react";
-
-const pauseHandler = (event: KeyboardEvent) => {
-  if (event.key === "Space") {
-    Rune.actions.pause();
-  }
-};
+import { useSoundStore } from "./components/game/soundStore.ts";
 
 function App() {
-  useAudio();
-
   const phase = useRuneStore((state) => state.game?.phase);
+  const yourPlayerId = useRuneStore((state) => state.yourPlayerId);
 
-  useEffect(() => {
-    document.addEventListener("keydown", pauseHandler);
-
-    return () => {
-      document.removeEventListener("keydown", pauseHandler);
-    };
-  }, []);
+  const audioAvailable = useSoundStore((state) => state.initialized);
+  const initialize = useSoundStore((state) => state.initialize);
 
   if (!phase) {
     return <div>Loading...</div>;
@@ -34,8 +21,12 @@ function App() {
 
   return (
     <div className={classes.container}>
-      {phase === "title" && <GetReady />}
-      {phase === "playing" && (
+      {phase === "title" && <GetReady onInteraction={initialize} />}
+      {/* workaround for spectators not having interacted with the game*/}
+      {phase !== "title" && !yourPlayerId && !audioAvailable && (
+        <button onClick={initialize}>Tap here to spectate</button>
+      )}
+      {phase === "playing" && audioAvailable && (
         <>
           <Canvas
             scene={{

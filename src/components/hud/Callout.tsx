@@ -1,6 +1,4 @@
-import { useEffect } from "react";
 import { playerIconLookup } from "./icons/player-icons";
-import { playSoundEffect } from "sounds-some-sounds";
 
 import classes from "./Hud.module.css";
 
@@ -18,10 +16,6 @@ export const Callout = ({
 }) => {
   const Icon = playerIconLookup[playerIcons[playerId]];
   const [x, y] = position;
-
-  useEffect(() => {
-    playSoundEffect("select", { volume: 0.5 });
-  }, []);
 
   return (
     <div

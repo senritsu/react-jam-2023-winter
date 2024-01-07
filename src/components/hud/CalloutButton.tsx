@@ -1,4 +1,3 @@
-import { playSoundEffect } from "sounds-some-sounds";
 import { PawnUp } from "./icons/PawnUp";
 
 import classes from "./Hud.module.css";
@@ -9,7 +8,6 @@ export const CalloutButton = () => {
       <button
         type="button"
         onClick={() => {
-          playSoundEffect("select");
           Rune.actions.requestControl();
         }}
       >

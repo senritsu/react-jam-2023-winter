@@ -15,6 +15,7 @@ import {
 // IBM Design Colors, color-blind safe, from https://davidmathlogic.com/colorblind
 export const COLORS = ["#648FFF", "#785EF0", "#DC267F", "#FE6100", "#FFB000"];
 export const ICONS = ["sword", "shield", "book", "bow"];
+export const NOTES = ["D4", "E4", "F4", "G4"];
 
 declare global {
   const Rune: RuneClient<GameState, GameActions>;
@@ -45,6 +46,9 @@ Rune.initLogic({
       ),
       playerIcons: Object.fromEntries(
         allPlayerIds.map((id, index) => [id, ICONS[index]])
+      ),
+      playerNotes: Object.fromEntries(
+        allPlayerIds.map((id, index) => [id, NOTES[index]])
       ),
       segments: [],
       totalDistance: 0,

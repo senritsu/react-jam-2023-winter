@@ -13,7 +13,7 @@ const tutorialMessages = [
 
 const tutorialMessageColors = COLORS.slice(1);
 
-export const GetReady = () => {
+export const GetReady = ({ onInteraction }: { onInteraction: () => void }) => {
   const yourPlayerId = useRuneStore((state) => state.yourPlayerId);
   const playerIcons = useRuneStore((state) => state.game.playerIcons);
   const playerColors = useRuneStore((state) => state.game.playerColors);
@@ -66,12 +66,18 @@ export const GetReady = () => {
           className={clsx(classes.button, {
             [classes.ready]: readyStatus[yourPlayerId],
           })}
-          onClick={() => Rune.actions.ready()}
+          onClick={async () => {
+            onInteraction?.();
+
+            Rune.actions.ready();
+          }}
         >
           <YourIcon />
           Ready
         </button>
       )}
+
+      {!yourPlayerId}
 
       {countdown && (
         <div className={classes.countdown}>
